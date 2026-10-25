@@ -1,0 +1,111 @@
+# Incident Hub - CI/CD. Agente autohospedado (pool "IncidentHub-SelfHosted").
+# Secretos: variable group "incident-hub-secrets" (Pipelines > Library). NUNCA en este archivo.
+trigger:
+  branches:
+    include: [main, release/*]
+  tags:
+    include: ['v*']
+
+pr:
+  branches:
+    include: [main]
+
+variables:
+  - group: incident-hub-secrets
+  - name: nodeVersion
+    value: '20.x'
+
+pool:
+  name: IncidentHub-SelfHosted
+
+stages:
+  - stage: Build
+    displayName: Build, pruebas y seguridad
+    jobs:
+      - job: ci
+        steps:
+          - checkout: self
+            fetchDepth: 0
+          - task: NodeTool@0
+            inputs: { versionSpec: $(nodeVersion) }
+            displayName: Instalar Node
+          - script: npm ci
+            workingDirectory: backend
+            displayName: Instalar dependencias backend
+          - script: npm ci
+            workingDirectory: frontend
+            displayName: Instalar dependencias frontend
+          - script: npm run lint
+            workingDirectory: backend
+            displayName: Lint
+          - script: npx jest --ci --coverage --reporters=default --reporters=jest-junit
+            workingDirectory: backend
+            displayName: Pruebas unitarias
+            env: { JEST_JUNIT_OUTPUT_DIR: $(Build.SourcesDirectory)/backend }
+          - task: PublishTestResults@2
+            condition: succeededOrFailed()
+            inputs: { testResultsFormat: JUnit, testResultsFiles: 'backend/junit.xml' }
+          - script: npm audit --audit-level=high
+            workingDirectory: backend
+            displayName: Revisión de dependencias backend
+          - script: npm audit --audit-level=high
+            workingDirectory: frontend
+            displayName: Revisión de dependencias frontend
+          - script: npm run build
+            workingDirectory: frontend
+            displayName: Build frontend
+          - script: |
+              mkdir -p $(Build.ArtifactStagingDirectory)/pkg
+              cp -r backend/src backend/package.json backend/package-lock.json $(Build.ArtifactStagingDirectory)/pkg/
+              cp -r frontend/dist $(Build.ArtifactStagingDirectory)/pkg/public
+              cp -r database $(Build.ArtifactStagingDirectory)/pkg/database
+            displayName: Preparar paquete
+          - task: ArchiveFiles@2
+            inputs:
+              rootFolderOrFile: $(Build.ArtifactStagingDirectory)/pkg
+              includeRootFolder: false
+              archiveFile: $(Build.ArtifactStagingDirectory)/incident-hub-$(Build.BuildNumber).zip
+          - publish: $(Build.ArtifactStagingDirectory)/incident-hub-$(Build.BuildNumber).zip
+            artifact: incident-hub-package
+            displayName: Publicar artefacto
+
+  - stage: DEV
+    displayName: Despliegue DEV (automático)
+    dependsOn: Build
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - deployment: dev
+        environment: incident-hub-dev
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - script: echo "Desplegando $(Build.BuildNumber) en DEV"
+                - script: bash devops/scripts/smoke-test.sh "$(DEV_URL)"
+                  displayName: Smoke test DEV
+                  condition: ne(variables['DEV_URL'], '')
+
+  - stage: QA
+    displayName: Despliegue QA (aprobación manual)
+    dependsOn: DEV
+    jobs:
+      - deployment: qa
+        environment: incident-hub-qa   # configurar Approvals and checks
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - script: echo "Desplegando $(Build.BuildNumber) en QA"
+
+  - stage: PROD
+    displayName: Producción (aprobación + solo tags vX.Y.Z)
+    dependsOn: QA
+    condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
+    jobs:
+      - deployment: prod
+        environment: incident-hub-prod # Approvals + Branch control en el environment
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - script: echo "Liberando $(Build.SourceBranchName) en PRODUCCIÓN"

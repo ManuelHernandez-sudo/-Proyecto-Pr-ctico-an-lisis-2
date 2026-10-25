@@ -1,0 +1,37 @@
+:root{--fondo:#e9edf0;--tinta:#16222e;--suave:#5a6b7a;--linea:#c5cfd8;--papel:#fff;--azul:#1d5fbf;--rojo:#c23b22;--verde:#2f7d5b;--ambar:#b7791f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--tinta);font:15px/1.5 "Segoe UI",system-ui,sans-serif}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 24px;background:var(--tinta);color:#fff}
+h1{margin:0;font-size:20px;letter-spacing:.2px}
+nav{display:flex;gap:6px}
+nav button{background:transparent;color:#cfd8e0;border:1px solid #3a4a59}
+nav button.on{background:#fff;color:var(--tinta)}
+main{max-width:1180px;margin:24px auto;padding:0 16px}
+button{background:var(--azul);color:#fff;border:0;border-radius:4px;padding:8px 14px;font:inherit;cursor:pointer}
+button.sec{background:#fff;color:var(--azul);border:1px solid var(--azul)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #7fb0f0;outline-offset:1px}
+input,select,textarea{font:inherit;padding:7px 9px;border:1px solid var(--linea);border-radius:4px;background:#fff;width:100%}
+label{display:block;font-weight:600;margin-bottom:10px}
+label input,label select,label textarea{margin-top:4px;font-weight:400}
+.panel{background:var(--papel);border:1px solid var(--linea);border-radius:6px;padding:18px}
+.fila{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}.fila>*{flex:1;min-width:140px}
+.split{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:960px){.split:has(aside){grid-template-columns:1.2fr 1fr}}
+.filtros{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.filtros select{width:auto;min-width:150px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--linea)}
+th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--linea)}
+th{background:#f4f7f9;font-weight:600}
+tbody tr{cursor:pointer}tbody tr:hover,tr.activa{background:#eef4fc}
+.estado,.p{display:inline-block;padding:1px 8px;border-radius:10px;font-size:12px;font-weight:600;background:#e2e8ee}
+.e-EN_PROCESO{background:#dbe8fa;color:var(--azul)}.e-RESUELTO{background:#d8eee3;color:var(--verde)}.e-CERRADO{background:#eee;color:var(--suave)}.e-ASIGNADO{background:#f6ead1;color:var(--ambar)}
+.p-CRITICA{background:var(--rojo);color:#fff}.p-ALTA{background:#f3d3cc;color:var(--rojo)}
+.meta{color:var(--suave);font-size:13px}.error{color:var(--rojo);font-weight:600}
+.acciones{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.bitacora{list-style:none;padding:0;margin:0 0 12px;max-height:260px;overflow:auto}
+.bitacora li{padding:8px 0;border-bottom:1px solid var(--linea)}.bitacora time{color:var(--suave);font-size:12px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:20px}
+.kpis div{background:#fff;border:1px solid var(--linea);border-radius:6px;padding:16px;color:var(--suave)}
+.kpis b{display:block;font-size:34px;color:var(--tinta)}.kpis .crit b{color:var(--rojo)}
+.dos{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}.dos>div{background:#fff;border:1px solid var(--linea);border-radius:6px;padding:16px}
+.barras{list-style:none;margin:0;padding:0}.barras li{display:grid;grid-template-columns:110px 1fr 30px;gap:8px;align-items:center;margin:6px 0}
+.barras i{display:block;height:12px;background:var(--azul);border-radius:2px}.barras b{text-align:right}

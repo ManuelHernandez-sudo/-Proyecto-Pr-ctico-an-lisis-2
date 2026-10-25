@@ -1,0 +1,31 @@
+Work Item Type,Title 1,Title 2,Title 3,Title 4,State,Priority,Original Estimate,Assigned To
+Epic,Gestión de incidentes,,,,,,,
+Feature,,Registro y consulta,,,,,,
+User Story,,,Crear incidente,,New,2,,dev.uno@tudominio.com
+Task,,,,API POST /incidentes con validaciones,To Do,1,4,dev.dos@tudominio.com
+Task,,,,Formulario React de reporte,To Do,2,3,reviewer@tudominio.com
+User Story,,,Consultar y filtrar incidentes,,New,2,,devops@tudominio.com
+Task,,,,API GET con filtros,To Do,1,3,dev.uno@tudominio.com
+Task,,,,Tabla con filtros en UI,To Do,2,4,dev.dos@tudominio.com
+Feature,,Operación y seguimiento,,,,,,
+User Story,,,Asignar técnico y cambiar estado,,New,2,,reviewer@tudominio.com
+Task,,,,Máquina de estados y endpoints,To Do,1,4,devops@tudominio.com
+Task,,,,UI de asignación y transición,To Do,2,3,dev.uno@tudominio.com
+User Story,,,Bitácora de comentarios,,New,2,,dev.dos@tudominio.com
+Task,,,,Tabla y endpoint de comentarios,To Do,2,3,reviewer@tudominio.com
+Task,,,,Historial visible en UI + dashboard,To Do,2,4,devops@tudominio.com
+Epic,Plataforma DevOps,,,,,,,
+Feature,,CI/CD,,,,,,
+User Story,,,Pipeline de build y pruebas,,New,2,,dev.uno@tudominio.com
+Task,,,,Crear azure-pipelines.yml,To Do,1,4,dev.dos@tudominio.com
+Task,,,,Pruebas unitarias e integración,To Do,1,4,reviewer@tudominio.com
+User Story,,,Agente autohospedado y secretos,,New,2,,devops@tudominio.com
+Task,,,,Instalar y registrar self-hosted agent,To Do,1,3,dev.uno@tudominio.com
+Task,,,,Variable group protegido,To Do,1,2,dev.dos@tudominio.com
+Feature,,Calidad y release,,,,,,
+User Story,,,Análisis de dependencias y GitHub Actions,,New,2,,reviewer@tudominio.com
+Task,,,,npm audit en pipeline y documento,To Do,2,3,devops@tudominio.com
+Task,,,,Workflow de PR con lint,To Do,2,2,dev.uno@tudominio.com
+User Story,,,Versionado y release,,New,2,,dev.dos@tudominio.com
+Task,,,,Tags SemVer hasta v1.0.0,To Do,2,2,reviewer@tudominio.com
+Task,,,,Environments con aprobación,To Do,1,3,devops@tudominio.com
