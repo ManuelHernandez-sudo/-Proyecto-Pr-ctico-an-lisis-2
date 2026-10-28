@@ -38,3 +38,11 @@ Estados: NUEVO → ASIGNADO → EN_PROCESO → RESUELTO → CERRADO.
 
 ## Documentación
 Ver `docs/`: arquitectura, branching, deuda técnica, seguridad, dependencias, release, evidencias.
+
+## Flujo de trabajo
+
+- `main` se mantiene estable; no se trabaja directamente en ella.
+- Ramas de trabajo: `feature/*`, `fix/*`, `refactor/*`.
+- Cada commit y Pull Request referencia un work item de Azure Boards con `AB#11`.
+- Todo cambio entra a `main` mediante Pull Request con al menos una revisión.
+- Los secretos (tokens, claves, contraseñas) nunca se guardan en el repositorio; se usan variables o secretos protegidos.
