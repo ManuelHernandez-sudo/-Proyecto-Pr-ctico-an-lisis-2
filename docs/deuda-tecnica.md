@@ -7,5 +7,6 @@
 | DT-4 | Sin pruebas del frontend | Calidad | **Resolver** | AB# |
 | DT-5 | Sin logging estructurado ni métricas | Operación | Pendiente | AB# |
 | DT-6 | Pruebas de API usan mocks, no BD real | Calidad | Pendiente | AB# |
+| DT-7 | `frontend/Dockerfile` ejecutaba `npm run dev` en lugar de servir el build de producción | Entrega | Resuelta | AB#11 |
 
 **Resolver al menos 2 (DT-3 y DT-4)** mediante Tasks, ramas `refactor/*` y PR con `AB#ID`; actualice la columna Estado/Work Item al cerrarlas.

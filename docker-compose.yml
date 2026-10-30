@@ -28,7 +28,7 @@ services:
     environment:
       VITE_API_PROXY_TARGET: http://api:3000
       VITE_API_URL: http://localhost:${API_PORT:-3000}/api
-    ports: ["${FRONTEND_PORT:-5173}:5173"]
+    ports: ["${FRONTEND_PORT:-5173}:80"]
     depends_on: [api]
 volumes:
   pgdata:
