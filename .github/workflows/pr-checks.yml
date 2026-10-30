@@ -20,6 +20,18 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm audit --audit-level=high
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: frontend
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+        working-directory: frontend
+      - name: Build frontend
+        run: npm run build
+        working-directory: frontend
+      - name: Run frontend browser tests
+        run: npm run test:e2e
+        working-directory: frontend
 
   dependency-review:
     if: github.event_name == 'pull_request'
