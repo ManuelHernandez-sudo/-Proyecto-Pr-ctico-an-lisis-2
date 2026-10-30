@@ -39,5 +39,7 @@ jobs:
           BODY: ${{ github.event.pull_request.body }}
           TITLE: ${{ github.event.pull_request.title }}
         run: |
-          echo "$HEAD" | grep -Eq '^(feature|fix|refactor)/' || { echo "Rama inválida: $HEAD"; exit 1; }
-          echo "$TITLE $BODY" | grep -Eq 'AB#[0-9]+' || { echo "Falta AB#ID en título o descripción"; exit 1; }
+          echo "$HEAD" | grep -Eq '^(feature|fix|refactor|docs|dependabot)/' || { echo "Rama inválida: $HEAD"; exit 1; }
+          if ! echo "$HEAD" | grep -Eq '^dependabot/'; then
+            echo "$TITLE $BODY" | grep -Eq 'AB#[0-9]+' || { echo "Falta AB#ID en título o descripción"; exit 1; }
+          fi
