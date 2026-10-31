@@ -54,12 +54,22 @@ stages:
           - script: npm run build
             workingDirectory: frontend
             displayName: Build frontend
-          - script: |
-              mkdir -p $(Build.ArtifactStagingDirectory)/pkg
-              cp -r backend/src backend/package.json backend/package-lock.json $(Build.ArtifactStagingDirectory)/pkg/
-              cp -r frontend/dist $(Build.ArtifactStagingDirectory)/pkg/public
-              cp -r database $(Build.ArtifactStagingDirectory)/pkg/database
+          - task: PowerShell@2
             displayName: Preparar paquete
+            inputs:
+              targetType: inline
+              script: |
+                $ErrorActionPreference = 'Stop'
+                $packageDir = Join-Path "$(Build.ArtifactStagingDirectory)" 'pkg'
+                $sourceDir = Join-Path $packageDir 'src'
+                $publicDir = Join-Path $packageDir 'public'
+                $databaseDir = Join-Path $packageDir 'database'
+                New-Item -ItemType Directory -Force -Path $packageDir, $sourceDir, $publicDir, $databaseDir | Out-Null
+                Copy-Item -Path "$(Build.SourcesDirectory)\backend\src\*" -Destination $sourceDir -Recurse -Force
+                Copy-Item -Path "$(Build.SourcesDirectory)\backend\package.json", "$(Build.SourcesDirectory)\backend\package-lock.json" -Destination $packageDir -Force
+                Copy-Item -Path "$(Build.SourcesDirectory)\frontend\dist\*" -Destination $publicDir -Recurse -Force
+                Copy-Item -Path "$(Build.SourcesDirectory)\database\*" -Destination $databaseDir -Recurse -Force
+              workingDirectory: $(Build.SourcesDirectory)
           - task: ArchiveFiles@2
             inputs:
               rootFolderOrFile: $(Build.ArtifactStagingDirectory)/pkg
@@ -81,9 +91,19 @@ stages:
             deploy:
               steps:
                 - script: echo "Desplegando $(Build.BuildNumber) en DEV"
-                - script: bash devops/scripts/smoke-test.sh "$(DEV_URL)"
+                - task: PowerShell@2
                   displayName: Smoke test DEV
                   condition: ne(variables['DEV_URL'], '')
+                  inputs:
+                    targetType: inline
+                    script: |
+                      $ErrorActionPreference = 'Stop'
+                      $baseUrl = "$(DEV_URL)".TrimEnd('/')
+                      $health = Invoke-RestMethod -Uri "$baseUrl/api/health" -Method Get
+                      if ($health.status -ne 'ok') {
+                        throw "Smoke test failed: unexpected health response."
+                      }
+                      Write-Host 'Smoke test OK'
 
   - stage: QA
     displayName: Despliegue QA (aprobación manual)
